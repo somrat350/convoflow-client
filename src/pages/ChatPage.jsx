@@ -4,9 +4,14 @@ import PageLoader from "../components/PageLoader";
 import { useEffect } from "react";
 import BorderAnimatedContainer from "../components/BorderAnimatedContainer";
 import ProfileHeader from "../components/ProfileHeader";
+import TabHeader from "../components/TabHeader";
+import ChatsList from "../components/ChatsList";
+import ContactList from "../components/ContactList";
+import { useChatStore } from "../store/useChatStore";
 
 const ChatPage = () => {
   const { checkAuth, isCheckingAuth, authUser } = useAuthStore();
+  const { activeTab } = useChatStore();
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
@@ -20,8 +25,10 @@ const ChatPage = () => {
         {/* LEFT SIDE */}
         <div className="w-80 bg-slate-800/50 backdrop-blur-sm flex flex-col">
           <ProfileHeader />
-
-          <div className="flex-1 overflow-y-auto p-4 space-y-2"></div>
+          <TabHeader />
+          <div className="flex-1 overflow-y-auto p-4 space-y-2">
+            {activeTab === "chats" ? <ChatsList /> : <ContactList />}
+          </div>
         </div>
 
         {/* RIGHT SIDE */}
