@@ -10,6 +10,7 @@ export const useChatStore = create((set, get) => ({
   selectedUser: null,
   isUsersLoading: false,
   isMessagesLoading: false,
+  isMessageSending: false,
   isSoundEnabled: JSON.parse(localStorage.getItem("isSoundEnabled")) === true,
 
   toggleSound: () => {
@@ -51,6 +52,21 @@ export const useChatStore = create((set, get) => ({
       toast.error(error?.response?.data?.message || "Failed to load messages");
     } finally {
       set({ isMessagesLoading: false });
+    }
+  },
+  sendMessage: async (messageData) => {
+    const { selectedUser, messages } = get();
+    try {
+      set({ isMessageSending: true });
+      const res = await axiosInstance.post(
+        `/api/message/send/${selectedUser._id}`,
+        messageData,
+      );
+      set({ messages: [...messages, res.data] });
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Failed to send message");
+    } finally {
+      set({ isMessageSending: false });
     }
   },
 }));
