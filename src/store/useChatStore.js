@@ -9,6 +9,7 @@ export const useChatStore = create((set, get) => ({
   activeTab: "chats",
   selectedUser: null,
   isUsersLoading: false,
+  isMessagesLoading: false,
   isSoundEnabled: JSON.parse(localStorage.getItem("isSoundEnabled")) === true,
 
   toggleSound: () => {
@@ -38,6 +39,18 @@ export const useChatStore = create((set, get) => ({
       toast.error(error.response.data.message);
     } finally {
       set({ isUsersLoading: false });
+    }
+  },
+  getMessagesByUserId: async (userId) => {
+    try {
+      set({ isMessagesLoading: true });
+      const res = await axiosInstance.get(`/api/message/chat/${userId}`);
+      set({ messages: res.data });
+      console.log(res);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Failed to load messages");
+    } finally {
+      set({ isMessagesLoading: false });
     }
   },
 }));
